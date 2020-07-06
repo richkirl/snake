@@ -16,6 +16,7 @@
 #include <sstream>
 #include <string>
 #include <cstdlib>
+#include <QTime>
 
 
 glSnake::eMenu operator++(glSnake::eMenu &aMenu) {
@@ -92,12 +93,20 @@ glSnake::glSnake(QWidget *parent):
   mvMenu.push_back({eMenu::PLAY, "Play"});
   mvMenu.push_back({eMenu::PLAYER_STAT, "Statistic"});
   mvMenu.push_back({eMenu::EXIT, "Exit"});
+//  QTimer *tmr1 = new QTimer(this);
+//  connect(tmr1, SIGNAL(timeout()), this, SLOT(updatetime()));
+  //_draw_timer();
+glSnake::a.setHMS(0,0,0);
+    //glSnake::tmr1->setInterval(1000);
   QTimer *tim = new QTimer(this);
   connect(tim, SIGNAL(timeout()), this, SLOT(updateGL()));
   tim -> start(33);
-  timerId = startTimer(15000);
-  locateFruit();
+  timerId = startTimer(1000);
+  glSnake::locateFruit();
   glSnake::score=0;
+  glSnake::i=0;
+
+
 
 }
 glSnake::~glSnake() { close(); delete tim; exit(0);}
@@ -131,8 +140,9 @@ void glSnake::paintGL() {
 
   _processing();
 
-
+//
   _draw();
+
 
 }
 
@@ -165,14 +175,20 @@ void glSnake::resizeEvent(QResizeEvent *apsize) {
 void glSnake::timerEvent(QTimerEvent *e)
 {
   Q_UNUSED(e)
-  locateFruit();
+    i++;
+  if(glSnake::i%15==0){locateFruit();}
+  if(glSnake::i==1000)glSnake::i=0;
+
+  updatetime();
+
+
 }
 
 
 void glSnake::_processing() {
   auto aw = glSnake::width();
   auto ah = glSnake::height();
-
+//
   switch (mState) {
   case eState::MENU: {
 
@@ -182,6 +198,9 @@ void glSnake::_processing() {
     break;
   }
   case eState::PLAY: {
+    //timerf();
+      //_draw_timer();
+
 
         if(y3 ==30 && y4==30){
             y1=ah-10;
@@ -193,10 +212,10 @@ void glSnake::_processing() {
             break;
           }
         if(y1 ==ah && y2==ah){
-            y1=0;
-            y2=0;
-            y3=10;
-            y4=10;
+            y1=30;
+            y2=30;
+            y3=40;
+            y4=40;
             _draw_snake();
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             break;
@@ -289,6 +308,9 @@ void glSnake::_draw() {
 
     _draw_fruits();
 _draw_score();
+
+_draw_timer();
+//timerf();
     break;
   }
   case eState::EXIT: {
@@ -369,7 +391,10 @@ void glSnake::_draw_play() {
 glLineWidth(1);
 static auto font = QFont("Sans", 18);
 renderText(aw / 8.5, 20, "Score", font);
+static auto font1 = QFont("Sans", 18);
+renderText(aw / 8.5+185, 20, "Timer", font);
 //_draw_score();
+_draw_timer();
   for(int x=0;x!=N;x++)
     {
       glBegin(GL_LINE_STRIP);
@@ -438,6 +463,14 @@ void glSnake::_draw_score()
     QString s;
     static auto font = QFont("Sans", 18);
     renderText(aw / 8.5+65, 20, s.setNum(score), font);
+}
+
+void glSnake::_draw_timer()
+{
+    auto aw = glSnake::width();
+    QString s1;
+    static auto font1 = QFont("Sans", 18);
+    renderText(aw / 8.5+300, 20, (glSnake::a.toString("hh:mm:ss")), font1);
 }
 
 void glSnake::key_release_menu(int aKey) {
@@ -598,7 +631,18 @@ int glSnake::X4() { return x4; }
 
 int glSnake::Y4() { return y4; }
 
+void glSnake::timerf()
+{
+        //QTimer *tmr1;
+
+        glSnake::tmr1 = new QTimer();
+        connect(glSnake::tmr1, SIGNAL(timeout()), this, SLOT(updatetime()));
+glSnake::tmr1->setInterval(1000);
+    }
+
 void glSnake::updatetime()
 {
+
+    glSnake::a=glSnake::a.addSecs(1);
 
 }

@@ -9,6 +9,7 @@
 //#include <GL/glut.h>
 #include <QVector>
 #include <QPoint>
+#include <QTime>
 
 class glSnake : public QGLWidget {
   Q_OBJECT
@@ -72,6 +73,10 @@ public:
   QTimer *tim;
   QVector<C> snakea;
   int score=0;
+  QTimer *tmr1;
+  int i=0;
+  void timerf();
+  QTime a;
 private slots:
     void updatetime();
     void locateFruit();
@@ -94,6 +99,7 @@ private:
   void _draw_snake();
   void _draw_fruits();
   void _draw_score();
+  void _draw_timer();
 
   void key_release_menu(int);
   void key_release_player_stat(int);
