@@ -5,7 +5,7 @@
 
 Build qt project-> cd to directory Buildproject 
 
-copy mfdl.sh to Buildproject
+copy mfdl.sh to directory Buildproject
 
 chmod +x mfdl.sh
 
